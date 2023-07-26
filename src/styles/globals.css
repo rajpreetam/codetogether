@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    @apply p-0 m-0
+}
+
+body {
+    @apply bg-bg-l dark:bg-bg-d text-text-l dark:text-text-d
+}
+
+.card {
+    @apply bg-card-l dark:bg-card-d rounded-sm
+}
+
+.card-light {
+    @apply bg-card-ll dark:bg-card-dl rounded-sm
+}
+
+.container {
+    @apply w-full mx-auto max-w-[95%] sm:max-w-[90%] md:max-w-[80%] lg:max-w-[75%] xl:max-w-[70%]
+}
+
+.container-db {
+    @apply mx-2
+}
+
+.fc {
+    @apply flex flex-col
+}
+
+.fr-ic-jc {
+    @apply flex items-center justify-center
+}
+
+.fr-ic-sx2 {
+    @apply flex items-center space-x-2
+}
+
+.fr-ic-sx4 {
+    @apply flex items-center space-x-4
+}
+
+.fc-sy2 {
+    @apply flex flex-col space-y-2
+}
+
+.fc-sy4 {
+    @apply flex flex-col space-y-4
+}
