@@ -6,10 +6,13 @@ export interface LayoutProps extends ComponentProps<'div'> {
 };
 
 const Layout = ({children}: LayoutProps) => {
+
     return (
         <div>
             <Navbar />
-            {children}
+            <div>
+                {children}
+            </div>
         </div>
     );
 };

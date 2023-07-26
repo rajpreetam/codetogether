@@ -26,8 +26,14 @@ body {
     @apply mx-2
 }
 
+/* display: flex - rules */
+
 .fc {
     @apply flex flex-col
+}
+
+.fr-ic-jb {
+    @apply flex items-center justify-between
 }
 
 .fr-ic-jc {
@@ -48,4 +54,10 @@ body {
 
 .fc-sy4 {
     @apply flex flex-col space-y-4
+}
+
+/* End */
+
+.logo {
+    @apply text-xl font-semibold
 }
