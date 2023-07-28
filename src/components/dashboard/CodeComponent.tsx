@@ -1,4 +1,5 @@
 import React from 'react';
+import CodeEditor from '@c/dashboard/CodeEditor';
 
 const CodeComponent = () => {
     return (
@@ -6,8 +7,8 @@ const CodeComponent = () => {
             <div className='card p-2'>
                 C++
             </div>
-            <div className='card-light h-[calc(100vh-168px)] p-2 my-2'>
-                Hello
+            <div className='card-light h-[calc(100vh-168px)] my-2'>
+                <CodeEditor />
             </div>
             <div className='card p-2'>
                 console
