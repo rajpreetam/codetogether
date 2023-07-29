@@ -1,9 +1,10 @@
+import CreateRoom from '@/components/dashboard/CreateRoom';
 import React from 'react';
 
 const CreateRoomPage = () => {
     return (
-        <div>
-            
+        <div className='container py-2 w-full fr-ic-jc'>
+            <CreateRoom />
         </div>
     )
 };

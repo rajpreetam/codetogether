@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { User } from '@/types';
 import { logout } from '@/store/features/auth/authSlice';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { FolderPlusIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     clicked: boolean;
 };
 
 const ProfileModel = ({clicked}: Props) => {
+    const router = useRouter();
     const dispatch: AppDispatch = useDispatch();
     const user = useSelector<RootState>(state => state.auth.user);
 
@@ -24,7 +27,17 @@ const ProfileModel = ({clicked}: Props) => {
                 />
                 <h1>{`${(user as User).first_name} ${(user as User).last_name}`}</h1>
             </div>
+
             <div className='border-b w-full border-text-d dark:border-text-l' />
+
+            <div
+                className='fr-ic-sx2 cursor-pointer'
+                onClick={() => router.push('/dashboard/create-room')}
+            >
+                <FolderPlusIcon className='icon' />
+                <p>Create/Join Room</p>
+            </div>
+
             <div
                 className='fr-ic-sx2'
                 onClick={() => dispatch(logout())}

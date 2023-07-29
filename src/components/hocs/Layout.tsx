@@ -36,7 +36,6 @@ const Layout = ({children}: LayoutProps) => {
                     dispatch(login(JSON.parse(localStorage.user)));
                 })
                 .catch(err => {
-                    console.log(err.response.status === 401);
                     baseQuery.post('/auth/token/refresh', {refresh})
                         .then(res => {
                             const access = res.data.access;
