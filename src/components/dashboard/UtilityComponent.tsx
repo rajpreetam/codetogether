@@ -6,12 +6,14 @@ import UtilityNav from './utility/UtilityNav';
 import ActiveUsers from './utility/ActiveUsers';
 import LiveChat from './utility/LiveChat';
 import CodeBoard from './utility/CodeBoard';
+import { ActiveUsersDT, User } from '@/types';
 
 type Props = {
     room_id: string;
+    activeUsers: ActiveUsersDT[]
 };
 
-const UtilityComponent = ({room_id}: Props) => {
+const UtilityComponent = ({room_id, activeUsers}: Props) => {
     const [roomInfoClicked, setRoomInfoClicked] = useState(true);
     const [activeUsersClicked, setActiveUsersClicked] = useState(false);
     const [chatClicked, setChatClicked] = useState(false);
@@ -19,8 +21,8 @@ const UtilityComponent = ({room_id}: Props) => {
 
     const itemToSHow = () => {
         if(roomInfoClicked) return <RoomInfo room_id={room_id} />
-        else if(activeUsersClicked) return <ActiveUsers />
-        else if(chatClicked) return <LiveChat />
+        else if(activeUsersClicked) return <ActiveUsers activeUsers={activeUsers} />
+        else if(chatClicked) return <LiveChat room_id={room_id} />
         else if(boardClicked) return <CodeBoard />
         else return <p>Something went wrong</p>; 
     };

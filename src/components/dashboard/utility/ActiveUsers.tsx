@@ -1,9 +1,17 @@
+import { ActiveUsersDT, User } from '@/types';
 import React from 'react';
 
-const ActiveUsers = () => {
+type Props = {
+    activeUsers: ActiveUsersDT[]
+};
+
+const ActiveUsers = ({activeUsers}: Props) => {
+    
     return (
         <div className='w-full h-full'>
-            ActiveUsers
+            {activeUsers.map(user => (
+                <p key={user.user.username}>{user.user.username}</p>
+            ))}
         </div>
     );
 };

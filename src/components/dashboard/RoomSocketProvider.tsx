@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import UtilityComponent from './UtilityComponent';
 import CodeComponent from './CodeComponent';
 import { toast } from 'react-toastify';
-import { SocketData } from '@/types';
+import { ActiveUsersDT, SocketData, User } from '@/types';
 import { ceJudgeBaseQuery } from '@/services';
 
 type Props = {
@@ -25,6 +25,7 @@ const RoomSocketProvider = ({room_id}: Props) => {
     const [codeSubmitLoading, setCodeSubmitLoading] = useState(false);
     const [consoleIconClicked, setConsoleIconClicked] = useState(false);
     const [ioIconClicked, setIoIconClicked] = useState(false);
+    const [activeUsers, setActiveUsers] = useState<ActiveUsersDT[]>([]);
     
 
     useEffect(() => {
@@ -34,11 +35,19 @@ const RoomSocketProvider = ({room_id}: Props) => {
         wsRef.current = ws;
 
         ws.onopen = () => {
-            toast.info('Connected to server');
+            console.log('Connected to server');
         };
 
         ws.onmessage = (e) => {
             const data = JSON.parse(e.data);
+            if(data.new_username && data.new_username !== user.username){
+                toast.info(`${data.new_username} joined the room`)
+            }
+
+            if(data.active_users) {
+                setActiveUsers(data.active_users);
+            }
+            
             if(data.username !== user.username) {
                 const source_code = data.source_code;
                 const language_id = data.language_id;
@@ -164,7 +173,10 @@ const RoomSocketProvider = ({room_id}: Props) => {
 
     return (
         <div className='container-db min-w-[800px] fr-ic-sx2 py-2'>
-            <UtilityComponent room_id={room_id} />
+            <UtilityComponent
+                room_id={room_id}
+                activeUsers={activeUsers}    
+            />
             <CodeComponent
                 socketData={socketData}
                 setSocketData={setSocketData}

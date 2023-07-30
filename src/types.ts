@@ -26,3 +26,7 @@ export interface SocketData {
     console_text: string;
     disable_editor: boolean;
 };
+
+export interface ActiveUsersDT {
+    user: User
+};
