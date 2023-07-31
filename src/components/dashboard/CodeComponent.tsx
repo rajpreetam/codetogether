@@ -1,50 +1,53 @@
 "use client";
 import React, { useState } from "react";
-import { Editor, OnChange } from "@monaco-editor/react";
-import { ChevronDownIcon, ChevronUpIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
-import { SocketData } from "@/types";
+import {
+    ChevronDownIcon,
+    ChevronUpIcon,
+    InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 import supportedLanguage from "@/utils/supportedLanguage";
 import Spinner from "../ui/Spinner";
+import CodeEditor from "./editors/CodeEditor";
+import ConsoleEditor from "./editors/ConsoleEditor";
+import InputEditor from "./editors/InputEditor";
+import OutputEditor from "./editors/OutputEditor";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
+import {
+    updateIsConsoleIconClicked,
+    updateIsIoIconClicked,
+    updateLanguageId,
+} from "@/store/features/webSockets/codeWsSlice";
 
 type Props = {
-    socketData: SocketData;
-    setSocketData: (value: SocketData) => void;
-    handleEditorChange: OnChange;
-    handleConsoleEditorChange: OnChange;
-    handleInputEditorChange: OnChange;
-    handleOutputEditorChange: OnChange;
     handleCodeSubmit: () => void;
-    codeSubmitLoading: boolean;
-    consoleIconClicked: boolean;
-    setConsoleIconClicked: (value: boolean) => void;
-    ioIconClicked: boolean;
-    setIoIconClicked: (value: boolean) => void;
 };
 
-const CodeComponent = ({
-    socketData,
-    setSocketData,
-    handleEditorChange,
-    handleConsoleEditorChange,
-    handleInputEditorChange,
-    handleOutputEditorChange,
-    handleCodeSubmit,
-    codeSubmitLoading,
-    consoleIconClicked,
-    setConsoleIconClicked,
-    ioIconClicked,
-    setIoIconClicked
-}: Props) => {
-    const [languageDropDownClicked, setLanguageDropDownClicked] = useState(false);
+const CodeComponent = ({ handleCodeSubmit }: Props) => {
+    const dispatch: AppDispatch = useDispatch();
+    const socketData = useSelector(
+        (state: RootState) => state.codeWs.socketData
+    );
+    const isConsoleIconClicked = useSelector(
+        (state: RootState) => state.codeWs.isConsoleIconClicked
+    );
+    const isIoIconClicked = useSelector(
+        (state: RootState) => state.codeWs.isIoIconClicked
+    );
+    const isCodeSubmitting = useSelector(
+        (state: RootState) => state.codeWs.isCodeSubmitting
+    );
+    const [languageDropDownClicked, setLanguageDropDownClicked] =
+        useState(false);
 
     const handleConsoleClick = () => {
-        setConsoleIconClicked(!consoleIconClicked);
-        setIoIconClicked(false);
+        dispatch(updateIsConsoleIconClicked(!isConsoleIconClicked));
+        dispatch(updateIsIoIconClicked(false));
     };
 
     const handleIoClick = () => {
-        setIoIconClicked(!ioIconClicked);
-        setConsoleIconClicked(false);
+        dispatch(updateIsIoIconClicked(!isIoIconClicked));
+        dispatch(updateIsConsoleIconClicked(false));
     };
 
     return (
@@ -82,10 +85,7 @@ const CodeComponent = ({
                                 key={item.languageId}
                                 className=""
                                 onClick={() => {
-                                    setSocketData({
-                                        ...socketData,
-                                        language_id: item.languageId,
-                                    });
+                                    dispatch(updateLanguageId(item.languageId));
                                     setLanguageDropDownClicked(false);
                                 }}
                             >
@@ -94,69 +94,40 @@ const CodeComponent = ({
                         ))}
                     </div>
                 </div>
-                {codeSubmitLoading ? (
-                    <Spinner/>
-                ): (
-                    <button className="font-semibold" onClick={handleCodeSubmit}>Submit</button>
+                {isCodeSubmitting ? (
+                    <Spinner />
+                ) : (
+                    <button
+                        className="font-semibold"
+                        onClick={handleCodeSubmit}
+                    >
+                        Submit
+                    </button>
                 )}
             </div>
             <div className="card-light flex-1 my-2">
-                <Editor
-                    key={socketData.language_id}
-                    height="100%"
-                    width="100%"
-                    theme="vs-dark"
-                    defaultLanguage={
-                        supportedLanguage.find(
-                            (language) =>
-                                language.languageId === socketData.language_id
-                        )?.name
-                    }
-                    onChange={handleEditorChange}
-                    value={socketData.source_code}
-                />
+                <CodeEditor />
             </div>
             <div
                 className={`card-light p-2 absolute w-full bottom-10 z-30 ${
-                    consoleIconClicked ? "fc-sy2" : "hidden"
+                    isConsoleIconClicked ? "fc-sy2" : "hidden"
                 }`}
             >
                 <p>Console</p>
-                <Editor
-                    height="300px"
-                    width="100%"
-                    theme="vs-dark"
-                    defaultLanguage="bash"
-                    onChange={handleConsoleEditorChange}
-                    value={socketData.console_text}
-                />
+                <ConsoleEditor />
             </div>
             <div
                 className={`card-light p-2 absolute w-full bottom-10 z-30 ${
-                    ioIconClicked ? "fr-ic-sx2" : "hidden"
+                    isIoIconClicked ? "fr-ic-sx2" : "hidden"
                 }`}
             >
                 <div className="fc-sy2 w-[50%]">
                     <p>Input</p>
-                    <Editor
-                        height="300px"
-                        width="100%"
-                        theme="vs-dark"
-                        defaultLanguage="bash"
-                        onChange={handleInputEditorChange}
-                        value={socketData.input_text}
-                    />
+                    <InputEditor />
                 </div>
                 <div className="fc-sy2 w-[50%]">
                     <p>Output</p>
-                    <Editor
-                        height="300px"
-                        width="100%"
-                        theme="vs-dark"
-                        defaultLanguage="bash"
-                        onChange={handleOutputEditorChange}
-                        value={socketData.output_text}
-                    />
+                    <OutputEditor />
                 </div>
             </div>
             <div className="card p-2 fr-ic-jb">
@@ -164,9 +135,15 @@ const CodeComponent = ({
                     className="fr-ic-sx2 cursor-pointer"
                     onClick={handleConsoleClick}
                 >
-                    <InformationCircleIcon className={`icon-sm ${socketData.console_text !== '' ? 'text-red-500' : 'text-green-500'}`} />
+                    <InformationCircleIcon
+                        className={`icon-sm ${
+                            socketData.console_text !== ""
+                                ? "text-red-500"
+                                : "text-green-500"
+                        }`}
+                    />
                     <p>console</p>
-                    {consoleIconClicked ? (
+                    {isConsoleIconClicked ? (
                         <ChevronDownIcon className="icon-sm" />
                     ) : (
                         <ChevronUpIcon className="icon-sm" />
@@ -177,7 +154,7 @@ const CodeComponent = ({
                     onClick={handleIoClick}
                 >
                     <p>input/output</p>
-                    {ioIconClicked ? (
+                    {isIoIconClicked ? (
                         <ChevronDownIcon className="icon-sm" />
                     ) : (
                         <ChevronUpIcon className="icon-sm" />

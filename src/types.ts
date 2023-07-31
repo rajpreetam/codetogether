@@ -10,7 +10,7 @@ export interface TokenData {
     refresh: string;
 };
 
-type LanguageId = '50' | '54' | '62' | '63' | '68' | '71' | '74';
+export type LanguageId = '50' | '54' | '62' | '63' | '68' | '71' | '74';
 
 export interface Language {
     languageId: LanguageId;

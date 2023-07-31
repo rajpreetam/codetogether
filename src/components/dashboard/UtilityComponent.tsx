@@ -1,19 +1,19 @@
 'use client';
 import React, { useState } from 'react';
-import { InformationCircleIcon, UserGroupIcon, InboxIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
 import RoomInfo from './utility/RoomInfo';
 import UtilityNav from './utility/UtilityNav';
 import ActiveUsers from './utility/ActiveUsers';
 import LiveChat from './utility/LiveChat';
 import CodeBoard from './utility/CodeBoard';
-import { ActiveUsersDT, User } from '@/types';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 type Props = {
     room_id: string;
-    activeUsers: ActiveUsersDT[]
 };
 
-const UtilityComponent = ({room_id, activeUsers}: Props) => {
+const UtilityComponent = ({room_id}: Props) => {
+    const activeUsers = useSelector((state: RootState) =>  state.codeWs.activeUsers);
     const [roomInfoClicked, setRoomInfoClicked] = useState(true);
     const [activeUsersClicked, setActiveUsersClicked] = useState(false);
     const [chatClicked, setChatClicked] = useState(false);
